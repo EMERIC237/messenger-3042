@@ -24,7 +24,7 @@ export const gotConversations = (conversations) => {
     conversations,
   };
 };
-
+// add a new message to the conversation
 export const setNewMessage = (message, sender) => {
   return {
     type: SET_MESSAGE,
