@@ -96,7 +96,7 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => async (dispatch) => {
   try {
     const response = saveMessage(body);
-    const data = await response; /*await for the data response before using if*/
+    const data = await response;
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {

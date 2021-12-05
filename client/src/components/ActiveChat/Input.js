@@ -45,7 +45,7 @@ const Input = (props) => {
         <FilledInput
           classes={{ root: classes.input }}
           disableUnderline
-          placeholder="Type something here..."
+          placeholder="Type something..."
           value={text}
           name="text"
           onChange={handleChange}
