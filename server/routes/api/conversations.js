@@ -73,8 +73,7 @@ router.get("/", async (req, res, next) => {
         convoJSON.messages[convoJSON.messages.length - 1].text;
       conversations[i] = convoJSON;
     }
-    // conversations.sort((convoA,convoB)=> )
-
+    
     conversations.sort((convoA, convoB) => {
       return moment(convoB.messages[convoB.messages.length - 1].createdAt).diff(
         convoA.messages[convoA.messages.length - 1].createdAt
