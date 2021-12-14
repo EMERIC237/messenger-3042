@@ -47,11 +47,11 @@ export const removeOfflineUserFromStore = (state, id) => {
 
 export const addSearchedUsersToStore = (state, users) => {
   const currentUsers = {};
-  const newState = [...state];
+  const newState = [];
   const UsersList = [...users];
 
   // make table of current users so we can lookup faster
-  newState.forEach((convo) => {
+  state.forEach((convo) => {
     currentUsers[convo.otherUser.id] = true;
   });
 
@@ -63,7 +63,7 @@ export const addSearchedUsersToStore = (state, users) => {
     }
   });
 
-  return newState;
+  return [...state, ...newState];
 };
 
 export const addNewConvoToStore = (state, recipientId, message) => {

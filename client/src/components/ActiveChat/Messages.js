@@ -5,10 +5,6 @@ import moment from "moment";
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
-  messages.sort((messageA, messageB) => {
-    return moment(messageA.createdAt).diff(messageB.createdAt);
-  });
-  console.log(messages);
   return (
     <Box>
       {messages.map((message) => {
