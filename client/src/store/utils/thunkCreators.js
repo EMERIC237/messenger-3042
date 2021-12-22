@@ -3,6 +3,7 @@ import socket from "../../socket";
 import {
   gotConversations,
   addConversation,
+  updatedMessages,
   setNewMessage,
   setSearchedUsers,
 } from "../conversations";
@@ -108,6 +109,15 @@ export const postMessage = (body) => async (dispatch) => {
     console.error(error);
   }
 };
+export const updateMessages =
+  (senderId, conversationId) => async (dispatch) => {
+    try {
+      await axios.put(`/api/messages/${senderId}`);
+      dispatch(updatedMessages(conversationId, senderId));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {

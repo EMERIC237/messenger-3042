@@ -43,4 +43,39 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+//Update the conversation messages when the user read them
+router.put("/:senderId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { senderId } = req.params;
+    const foundedMessages = await Message.findAll({
+      where: {
+        senderId: senderId,
+      },
+    });
+    if (!foundedMessages) {
+      res.status(400).send({
+        status: "error",
+        message: `No message with senderId ${senderId} found`,
+      });
+    }
+    const UpdatedMessages = await Message.update(
+      { is_read: true },
+      { where: { senderId: senderId } }
+    );
+
+    if (!UpdatedMessages) {
+      res.status(400).send({
+        status: "error",
+        message: `data message with senderId ${senderId} failed update`,
+      });
+    }
+    res.json(UpdatedMessages);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

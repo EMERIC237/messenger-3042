@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import { Box } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
+import { updateMessages } from "../../store/utils/thunkCreators";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
+  const { conversationId, messages, otherUser, userId, updateMessages } = props;
+
+  useEffect(() => {
+    async function update() {
+      await updateMessages(otherUser.id, conversationId);
+    }
+    update();
+  }, [conversationId, otherUser.id, updateMessages]);
+
   return (
     <Box>
       {messages.map((message) => {
@@ -17,6 +27,7 @@ const Messages = (props) => {
             text={message.text}
             time={time}
             otherUser={otherUser}
+            senderId={message.senderId}
           />
         );
       })}
@@ -24,4 +35,12 @@ const Messages = (props) => {
   );
 };
 
-export default Messages;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateMessages: (senderId, conversationId) => {
+      dispatch(updateMessages(senderId, conversationId));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Messages);
