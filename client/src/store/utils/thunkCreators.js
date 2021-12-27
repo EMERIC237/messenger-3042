@@ -103,16 +103,16 @@ export const postMessage = (body) => async (dispatch) => {
     } else {
       dispatch(setNewMessage(data.message));
     }
-
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
   }
 };
+
 export const updateMessages =
-  (senderId, conversationId) => async (dispatch) => {
+  (senderId, conversationId, userId) => async (dispatch) => {
     try {
-      await axios.put(`/api/messages/${senderId}`);
+      await axios.put(`/api/messages/${senderId}`, {userId});
       dispatch(updatedMessages(conversationId, senderId));
     } catch (error) {
       console.error(error);

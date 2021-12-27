@@ -18,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
+  previewTextBold: {
+    fontWeight: "bold",
+    fontSize: 12,
+    letterSpacing: -0.17,
+  },
   avatarIcon: {
     maxHeight: 25,
     maxWidth: 30,
@@ -29,14 +34,8 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles();
   const { conversation } = props;
-  const { latestMessageText, messages, otherUser } = conversation;
-  const unreadMessagesOcc = messages.reduce(
-    (acc, message) =>
-      message.is_read === false && message.senderId === otherUser.id
-        ? acc + 1
-        : acc,
-    0
-  );
+  const { latestMessageText, unreadMessagesCount, otherUser } = conversation;
+
 
   return (
     <Box className={classes.root}>
@@ -44,13 +43,17 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography
+          className={
+            unreadMessagesCount ? classes.previewTextBold : classes.previewText
+          }
+        >
           {latestMessageText}
         </Typography>
       </Box>
-      {unreadMessagesOcc ? (
-        <Avatar className={classes.avatarIcon}>{unreadMessagesOcc}</Avatar>
-      ) : null}
+      {unreadMessagesCount > 0 && (
+        <Avatar className={classes.avatarIcon}>{unreadMessagesCount}</Avatar>
+      )}
     </Box>
   );
 };

@@ -7,20 +7,26 @@ import moment from "moment";
 
 const Messages = (props) => {
   const { conversationId, messages, otherUser, userId, updateMessages } = props;
-
   useEffect(() => {
-    async function update() {
-      await updateMessages(otherUser.id, conversationId);
+    function update() {
+      updateMessages(otherUser.id, conversationId, userId);
     }
     update();
-  }, [conversationId, otherUser.id, updateMessages]);
+  }, [conversationId, otherUser.id, updateMessages, userId]);
 
   return (
     <Box>
-      {messages.map((message) => {
+      {messages.map((message, index, arr) => {
         const time = moment(message.createdAt).format("h:mm");
         return message.senderId === userId ? (
-          <SenderBubble key={message.id} text={message.text} time={time} />
+          <SenderBubble
+            key={message.id}
+            text={message.text}
+            time={time}
+            otherUser={otherUser}
+            messageIndex={index}
+            length={arr.length}
+          />
         ) : (
           <OtherUserBubble
             key={message.id}
@@ -37,8 +43,8 @@ const Messages = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateMessages: (senderId, conversationId) => {
-      dispatch(updateMessages(senderId, conversationId));
+    updateMessages: (senderId, conversationId, userId) => {
+      dispatch(updateMessages(senderId, conversationId, userId));
     },
   };
 };

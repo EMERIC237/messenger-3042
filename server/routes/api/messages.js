@@ -9,11 +9,16 @@ router.post("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const senderId = req.user.id;
-    const { recipientId, text, conversationId, sender } = req.body;
+    const { recipientId, text, conversationId, sender, is_read } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      const message = await Message.create({ senderId, text, conversationId });
+      const message = await Message.create({
+        senderId,
+        text,
+        conversationId,
+        is_read,
+      });
       return res.json({ message, sender });
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
@@ -32,10 +37,12 @@ router.post("/", async (req, res, next) => {
         sender.online = true;
       }
     }
+
     const message = await Message.create({
       senderId,
       text,
       conversationId: conversation.id,
+      is_read,
     });
     res.json({ message, sender });
   } catch (error) {
@@ -50,17 +57,18 @@ router.put("/:senderId", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const { senderId } = req.params;
-    const foundedMessages = await Message.findAll({
-      where: {
-        senderId: senderId,
-      },
-    });
-    if (!foundedMessages) {
+    const recipientId = req.body.userId;
+    let conversation = await Conversation.findConversation(
+      senderId,
+      recipientId
+    );
+    if (!conversation) {
       res.status(400).send({
         status: "error",
-        message: `No message with senderId ${senderId} found`,
+        message: `conversation between ${senderId} and ${recipientId} not existing`,
       });
     }
+
     const UpdatedMessages = await Message.update(
       { is_read: true },
       { where: { senderId: senderId } }

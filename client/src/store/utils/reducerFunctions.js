@@ -27,11 +27,23 @@ export const updateMessagesToStore = (state, payload) => {
   return state.map((convo) => {
     if (convo.id === conversationId) {
       const convoCopy = { ...convo };
-      convoCopy.messages.forEach((message) => {
+      convoCopy.messages = convoCopy.messages.map((message) => {
         if (message.senderId === recipientId) {
-          message.is_read = true;
+          const messageCopy = { ...message };
+          messageCopy.is_read = true;
+          return messageCopy;
+        } else {
+          return message;
         }
       });
+      const otherUserId = convoCopy.otherUser && convoCopy.otherUser.id;
+      convoCopy.unreadMessagesCount = convoCopy.messages.reduce(
+        (acc, message) =>
+          message.is_read === false && message.senderId === otherUserId
+            ? acc + 1
+            : acc,
+        0
+      );
       return convoCopy;
     } else {
       return convo;
