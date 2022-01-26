@@ -10,7 +10,7 @@ const Message = db.define("message", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  is_read: {
+  isRead: {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
     allowNull: false,

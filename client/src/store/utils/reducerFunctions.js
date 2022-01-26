@@ -30,7 +30,7 @@ export const updateMessagesToStore = (state, payload) => {
       convoCopy.messages = convoCopy.messages.map((message) => {
         if (message.senderId === recipientId) {
           const messageCopy = { ...message };
-          messageCopy.is_read = true;
+          messageCopy.isRead = true;
           return messageCopy;
         } else {
           return message;
@@ -39,7 +39,7 @@ export const updateMessagesToStore = (state, payload) => {
       const otherUserId = convoCopy.otherUser && convoCopy.otherUser.id;
       convoCopy.unreadMessagesCount = convoCopy.messages.reduce(
         (acc, message) =>
-          message.is_read === false && message.senderId === otherUserId
+          message.isRead === false && message.senderId === otherUserId
             ? acc + 1
             : acc,
         0

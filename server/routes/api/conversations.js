@@ -77,7 +77,7 @@ router.get("/", async (req, res, next) => {
 
       convoJSON.unreadMessagesCount = convoJSON.messages.reduce(
         (acc, message) =>
-          message.is_read === false && message.senderId === otherUserId
+          message.isRead === false && message.senderId === otherUserId
             ? acc + 1
             : acc,
         0

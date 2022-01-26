@@ -9,7 +9,7 @@ router.post("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const senderId = req.user.id;
-    const { recipientId, text, conversationId, sender, is_read } = req.body;
+    const { recipientId, text, conversationId, sender, isRead } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
@@ -17,7 +17,7 @@ router.post("/", async (req, res, next) => {
         senderId,
         text,
         conversationId,
-        is_read,
+        isRead,
       });
       return res.json({ message, sender });
     }
@@ -42,7 +42,7 @@ router.post("/", async (req, res, next) => {
       senderId,
       text,
       conversationId: conversation.id,
-      is_read,
+      isRead,
     });
     res.json({ message, sender });
   } catch (error) {
@@ -70,7 +70,7 @@ router.put("/:senderId", async (req, res, next) => {
     }
 
     const UpdatedMessages = await Message.update(
-      { is_read: true },
+      { isRead: true },
       { where: { senderId: senderId } }
     );
 
@@ -80,7 +80,7 @@ router.put("/:senderId", async (req, res, next) => {
         message: `data message with senderId ${senderId} failed update`,
       });
     }
-    res.json(UpdatedMessages);
+    res.status(204);
   } catch (error) {
     next(error);
   }
