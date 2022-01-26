@@ -72,8 +72,18 @@ router.get("/", async (req, res, next) => {
       convoJSON.latestMessageText =
         convoJSON.messages[convoJSON.messages.length - 1].text;
       conversations[i] = convoJSON;
+
+      const otherUserId = convoJSON.otherUser && convoJSON.otherUser.id;
+
+      convoJSON.unreadMessagesCount = convoJSON.messages.reduce(
+        (acc, message) =>
+          message.isRead === false && message.senderId === otherUserId
+            ? acc + 1
+            : acc,
+        0
+      );
     }
-    
+
     conversations.sort((convoA, convoB) => {
       return moment(convoB.messages[convoB.messages.length - 1].createdAt).diff(
         convoA.messages[convoA.messages.length - 1].createdAt

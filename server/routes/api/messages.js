@@ -9,11 +9,16 @@ router.post("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const senderId = req.user.id;
-    const { recipientId, text, conversationId, sender } = req.body;
+    const { recipientId, text, conversationId, sender, isRead } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      const message = await Message.create({ senderId, text, conversationId });
+      const message = await Message.create({
+        senderId,
+        text,
+        conversationId,
+        isRead,
+      });
       return res.json({ message, sender });
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
@@ -32,12 +37,50 @@ router.post("/", async (req, res, next) => {
         sender.online = true;
       }
     }
+
     const message = await Message.create({
       senderId,
       text,
       conversationId: conversation.id,
+      isRead,
     });
     res.json({ message, sender });
+  } catch (error) {
+    next(error);
+  }
+});
+
+//Update the conversation messages when the user read them
+router.put("/:senderId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { senderId } = req.params;
+    const recipientId = req.body.userId;
+    let conversation = await Conversation.findConversation(
+      senderId,
+      recipientId
+    );
+    if (!conversation) {
+      res.status(400).send({
+        status: "error",
+        message: `conversation between ${senderId} and ${recipientId} not existing`,
+      });
+    }
+
+    const UpdatedMessages = await Message.update(
+      { isRead: true },
+      { where: { senderId: senderId } }
+    );
+
+    if (!UpdatedMessages) {
+      res.status(400).send({
+        status: "error",
+        message: `data message with senderId ${senderId} failed update`,
+      });
+    }
+    res.status(204);
   } catch (error) {
     next(error);
   }
