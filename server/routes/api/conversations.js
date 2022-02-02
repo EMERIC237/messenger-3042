@@ -51,6 +51,7 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
+      console.log(convoJSON.messages);
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
@@ -89,6 +90,7 @@ router.get("/", async (req, res, next) => {
         convoA.messages[convoA.messages.length - 1].createdAt
       );
     });
+    console.log(conversations);
     res.json(conversations);
   } catch (error) {
     next(error);
