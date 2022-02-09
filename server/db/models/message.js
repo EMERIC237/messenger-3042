@@ -15,10 +15,6 @@ const Message = db.define("message", {
     defaultValue: false,
     allowNull: false,
   },
-  groupId: {
-    type: Sequelize.STRING,
-    defaultValue: null,
-  },
 });
 
 module.exports = Message;
